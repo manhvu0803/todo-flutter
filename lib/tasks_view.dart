@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class TaskView extends StatefulWidget {
-  const TaskView({super.key});
+class TasksView extends StatefulWidget {
+  const TasksView({super.key});
 
   @override
-  State<TaskView> createState() => _TaskViewState();
+  State<TasksView> createState() => _TasksViewState();
 }
 
-class _TaskViewState extends State<TaskView> with TickerProviderStateMixin {
+class _TasksViewState extends State<TasksView> with TickerProviderStateMixin {
   late final TabController _tabController;
 
   @override
