@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:todo/date_time_extension.dart';
+import 'package:todo/task.dart';
+import 'package:todo/task_database.dart';
 
 class TaskCard extends StatefulWidget {
   final String title;
   final String subtitle;
   final bool isCompleted;
   final DateTime time;
+  final Task? task;
 
-  const TaskCard({super.key, required this.title, required this.subtitle, required this.isCompleted, required this.time});
+  const TaskCard({super.key, required this.title, required this.subtitle, required this.isCompleted, required this.time, this.task});
 
-  const TaskCard.fromTask({super.key, required this.title, required this.subtitle, required this.isCompleted, required this.time});
+  factory TaskCard.fromTask(Task task) {
+    return TaskCard(
+      title: task.title,
+      subtitle: task.note,
+      isCompleted: task.isCompleted,
+      time: task.time,
+      task: task,
+    );
+  }
 
   @override
   State<TaskCard> createState() => _TaskCardState();
@@ -31,15 +43,34 @@ class _TaskCardState extends State<TaskCard> {
           ListTile(
             leading: Checkbox(
               value: _isCompleted,
-              onChanged: (checked) => setState(() => _isCompleted = checked ?? false)
+              onChanged: (checked) {
+                if (widget.task != null) {
+                  widget.task!.isCompleted = checked ?? false;
+                  TaskDatabase.notifyChange();
+                }
+
+                setState(() => _isCompleted = checked ?? false);
+              }
             ),
             title: Text(widget.title),
-            subtitle: Text(widget.subtitle),
-          ),
-          ListTile(
-            leading: const Icon(Icons.calendar_month),
-            title: Text("${widget.time.year}/${widget.time.month}/${widget.time.day} ${widget.time.hour.toString().padLeft(2, "0")}:${widget.time.minute.toString().padLeft(2, "0")}")
-          ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(widget.subtitle),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(Icons.calendar_month),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4, top: 2),
+                      child: Text("${widget.time.dateString()} ${widget.time.timeOfDayString()}"),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 8)
+              ],
+            ),
+          )
         ],
       ),
     );

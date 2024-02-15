@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo/input_field.dart';
+import 'package:todo/task.dart';
+import 'package:todo/task_database.dart';
 
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
@@ -68,6 +70,27 @@ class _AddTaskPageState extends State<AddTaskPage> {
               ),
             ],
           ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
+            TaskDatabase.tasks.add(Task(
+              title: _titleController.text,
+              note: _noteController.text,
+              time: _selectedDate.copyWith(
+                hour: _selectedTime.hour,
+                minute: _selectedTime.minute,
+                millisecond: 0,
+                microsecond: 0
+              )
+            ));
+            TaskDatabase.notifyChange();
+            Navigator.pop(context);
+          },
         ),
       ),
     );

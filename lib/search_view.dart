@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:todo/task_card.dart';
+import 'package:todo/task_database.dart';
 
-class SearchView extends StatelessWidget {
+class SearchView extends StatefulWidget {
   const SearchView({super.key});
+
+  @override
+  State<SearchView> createState() => _SearchViewState();
+}
+
+class _SearchViewState extends State<SearchView> {
+  List<Widget> _searchResults = [];
 
   @override
   Widget build(BuildContext context) {
@@ -12,13 +22,31 @@ class SearchView extends StatelessWidget {
       )
     );
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: SearchBar(
-        autoFocus: true,
-        hintStyle: hintStyle,
-        hintText: "Search tasks...",
-      ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SearchBar(
+            autoFocus: true,
+            hintStyle: hintStyle,
+            hintText: "Search tasks...",
+            onSubmitted: _search,
+          ),
+        ),
+        Expanded(child: ListView(children: _searchResults))
+      ],
     );
+  }
+
+  void _search(String string) {
+    final cards = <Widget>[];
+
+    for (var task in TaskDatabase.tasks) {
+      if (task.title.contains(string) || task.note.contains(string)) {
+        cards.add(TaskCard.fromTask(task));
+      }
+    }
+
+    setState(() => _searchResults = cards);
   }
 }
