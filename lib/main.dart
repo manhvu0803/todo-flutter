@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest_all.dart' as timezone;
 import 'package:todo/add_task_page.dart';
 import 'package:todo/search_view.dart';
+import 'package:todo/task_database.dart';
 import 'package:todo/tasks_view.dart';
 
-void main() {
+Future<void> main() async {
   runApp(const TodoApp());
+  timezone.initializeTimeZones();
+  var notificationPlugin = FlutterLocalNotificationsPlugin();
+  await notificationPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
+  await notificationPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestExactAlarmsPermission();
+  await notificationPlugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('@mipmap/ic_launcher')));
+  TaskDatabase.notification = notificationPlugin;
+  TaskDatabase.notifyChange();
 }
 
 class TodoApp extends StatelessWidget {

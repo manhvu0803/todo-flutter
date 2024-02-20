@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:todo/date_time_extension.dart';
 import 'package:todo/task.dart';
 import 'package:todo/task_card.dart';
